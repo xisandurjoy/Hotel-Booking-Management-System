@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${editMode} ? 'Edit Booking' : 'Add Booking'">Booking Form</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav class="navbar">
+    <span class="brand">🏨 Hotel Booking</span>
+    <div class="nav-links">
+        <a th:href="@{/home}">Dashboard</a>
+        <a th:href="@{/guest/list}">Guests</a>
+        <a th:href="@{/booking/list}">Bookings</a>
+        <a th:href="@{/logout}" class="logout">Logout</a>
+    </div>
+</nav>
+
+<main class="container">
+    <h1 th:text="${editMode} ? 'Edit Booking' : 'Add Booking'"></h1>
+
+    <p class="empty-msg" th:if="${guests.isEmpty()}">
+        No guests yet - <a th:href="@{/guest/add}">add a guest first</a>, then come back to create a booking.
+    </p>
+
+    <form class="data-form" method="post"
+          th:action="${editMode} ? @{'/booking/edit/' + ${booking.id}} : @{/booking/add}"
+          th:object="${booking}">
+
+        <!-- ID is only ever shown, never editable. -->
+        <div class="form-row" th:if="${editMode}">
+            <label>Booking ID</label>
+            <input type="text" th:value="${booking.id}" disabled readonly>
+        </div>
+
+        <div class="form-row">
+            <label>Guest</label>
+            <select name="guestId" required>
+                <option value="">-- Select Guest --</option>
+                <option th:each="g : ${guests}"
+                        th:value="${g.id}"
+                        th:text="${g.name} + ' - ' + ${g.mobile}"
+                        th:selected="${booking.guest != null and booking.guest.id == g.id}">
+                </option>
+            </select>
+            <span class="field-error" th:errors="*{guest}"></span>
+        </div>
+
+        <div class="form-row">
+            <label>Floor</label>
+            <input type="number" th:field="*{floor}" min="0">
+            <span class="field-error" th:errors="*{floor}"></span>
+        </div>
+
+        <div class="form-row">
+            <label>Room Number</label>
+            <input type="number" th:field="*{roomNumber}" min="1">
+            <span class="field-error" th:errors="*{roomNumber}"></span>
+        </div>
+
+        <div class="form-row">
+            <label>Check In</label>
+            <input type="date" th:field="*{checkIn}">
+            <span class="field-error" th:errors="*{checkIn}"></span>
+        </div>
+
+        <div class="form-row">
+            <label>Check Out</label>
+            <input type="date" th:field="*{checkOut}">
+            <span class="field-error" th:errors="*{checkOut}"></span>
+        </div>
+
+        <div class="form-row" th:if="${editMode}">
+            <label>Days (auto-calculated)</label>
+            <input type="text" th:value="${booking.days}" disabled readonly>
+        </div>
+        <p class="hint" th:unless="${editMode}">Days will be calculated automatically from Check In &amp; Check Out.</p>
+
+        <div class="form-row">
+            <label>Amount</label>
+            <input type="number" step="0.01" th:field="*{amount}">
+            <span class="field-error" th:errors="*{amount}"></span>
+        </div>
+
+        <div class="form-row">
+            <label>Payment Status</label>
+            <select th:field="*{paymentStatus}">
+                <option value="">-- Select --</option>
+                <option value="Paid">Paid</option>
+                <option value="Partial">Partial</option>
+                <option value="Unpaid">Unpaid</option>
+            </select>
+            <span class="field-error" th:errors="*{paymentStatus}"></span>
+        </div>
+
+        <button type="submit" class="btn-primary" th:text="${editMode} ? 'Update Booking' : 'Add Booking'"></button>
+    </form>
+
+    <a th:href="@{/booking/list}" class="back-link">← Back to Booking List</a>
+</main>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Hotel Booking</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav class="navbar">
+    <span class="brand">🏨 Hotel Booking</span>
+    <div class="nav-links">
+        <a th:href="@{/home}">Dashboard</a>
+        <a th:href="@{/guest/list}">Guests</a>
+        <a th:href="@{/booking/list}">Bookings</a>
+        <a th:href="@{/logout}" class="logout">Logout</a>
+    </div>
+</nav>
+
+<main class="container">
+    <h1>Welcome, <span th:text="${username}"></span> 👋</h1>
+
+    <div class="dashboard-cards">
+        <a th:href="@{/guest/list}" class="dash-card card-blue">
+            <h2>Guests</h2>
+            <p>View, add, edit &amp; delete guest and passport records</p>
+        </a>
+        <a th:href="@{/booking/list}" class="dash-card card-orange">
+            <h2>Bookings</h2>
+            <p>Manage room bookings, dates &amp; payment status</p>
+        </a>
+    </div>
+</main>
+</body>
+</html>

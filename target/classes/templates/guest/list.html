@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Guests - Hotel Booking</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav class="navbar">
+    <span class="brand">🏨 Hotel Booking</span>
+    <div class="nav-links">
+        <a th:href="@{/home}">Dashboard</a>
+        <a th:href="@{/guest/list}">Guests</a>
+        <a th:href="@{/booking/list}">Bookings</a>
+        <a th:href="@{/logout}" class="logout">Logout</a>
+    </div>
+</nav>
+
+<main class="container">
+    <div class="page-header">
+        <h1>Guest List</h1>
+        <a th:href="@{/guest/add}" class="btn-primary">+ Add Guest</a>
+    </div>
+
+    <p class="empty-msg" th:if="${guests.isEmpty()}">No guests available yet.</p>
+
+    <table class="data-table" th:unless="${guests.isEmpty()}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Mobile</th>
+            <th>Passport No.</th>
+            <th>Expiry</th>
+            <th>Country</th>
+            <th>Special Requests</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="guest : ${guests}">
+            <td th:text="${guest.id}"></td>
+            <td th:text="${guest.name}"></td>
+            <td th:text="${guest.email}"></td>
+            <td th:text="${guest.mobile}"></td>
+            <td th:text="${guest.passport.passportNumber}"></td>
+            <td th:text="${guest.passport.expiryDate}"></td>
+            <td th:text="${guest.passport.country}"></td>
+            <td th:text="${guest.specialRequests.isEmpty()} ? '-' : ${#strings.listJoin(guest.specialRequests, ', ')}"></td>
+            <td class="actions">
+                <a th:href="@{'/guest/edit/' + ${guest.id}}" class="btn-edit">Edit</a>
+                <a th:href="'#delDialog-' + ${guest.id}" class="btn-delete">Delete</a>
+
+                <!-- Pure HTML5 dialog opened via CSS :target - no JS at all -->
+                <dialog th:id="'delDialog-' + ${guest.id}" class="confirm-dialog">
+                    <p>Delete guest <strong th:text="${guest.name}"></strong>? This can't be undone.</p>
+                    <div class="dialog-actions">
+                        <a th:href="@{'/guest/delete/' + ${guest.id}}" class="btn-danger">Yes, Delete</a>
+                        <a href="#" class="btn-cancel">Cancel</a>
+                    </div>
+                </dialog>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

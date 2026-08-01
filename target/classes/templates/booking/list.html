@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bookings - Hotel Booking</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav class="navbar">
+    <span class="brand">🏨 Hotel Booking</span>
+    <div class="nav-links">
+        <a th:href="@{/home}">Dashboard</a>
+        <a th:href="@{/guest/list}">Guests</a>
+        <a th:href="@{/booking/list}">Bookings</a>
+        <a th:href="@{/logout}" class="logout">Logout</a>
+    </div>
+</nav>
+
+<main class="container">
+    <div class="page-header">
+        <h1>Booking List</h1>
+        <a th:href="@{/booking/add}" class="btn-primary">+ Add Booking</a>
+    </div>
+
+    <p class="empty-msg" th:if="${bookings.isEmpty()}">No bookings available yet.</p>
+
+    <table class="data-table" th:unless="${bookings.isEmpty()}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Guest</th>
+            <th>Floor</th>
+            <th>Room No.</th>
+            <th>Check In</th>
+            <th>Check Out</th>
+            <th>Days</th>
+            <th>Amount</th>
+            <th>Payment</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="booking : ${bookings}">
+            <td th:text="${booking.id}"></td>
+            <td th:text="${booking.guest != null ? booking.guest.name : '-'}"></td>
+            <td th:text="${booking.floor}"></td>
+            <td th:text="${booking.roomNumber}"></td>
+            <td th:text="${booking.checkIn}"></td>
+            <td th:text="${booking.checkOut}"></td>
+            <td th:text="${booking.days}"></td>
+            <td th:text="${booking.amount}"></td>
+            <td>
+                <span class="badge"
+                      th:text="${booking.paymentStatus}"
+                      th:classappend="${booking.paymentStatus == 'Paid'} ? 'badge-paid' : (${booking.paymentStatus == 'Partial'} ? 'badge-partial' : 'badge-unpaid')">
+                </span>
+            </td>
+            <td class="actions">
+                <a th:href="@{'/booking/edit/' + ${booking.id}}" class="btn-edit">Edit</a>
+                <a th:href="'#delDialog-' + ${booking.id}" class="btn-delete">Delete</a>
+
+                <!-- Pure HTML5 dialog opened via CSS :target - no JS at all -->
+                <dialog th:id="'delDialog-' + ${booking.id}" class="confirm-dialog">
+                    <p>Delete booking <strong th:text="'#' + ${booking.id}"></strong> for
+                        <strong th:text="${booking.guest != null ? booking.guest.name : 'this guest'}"></strong>?</p>
+                    <div class="dialog-actions">
+                        <a th:href="@{'/booking/delete/' + ${booking.id}}" class="btn-danger">Yes, Delete</a>
+                        <a href="#" class="btn-cancel">Cancel</a>
+                    </div>
+                </dialog>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

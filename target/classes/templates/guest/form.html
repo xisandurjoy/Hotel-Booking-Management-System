@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${editMode} ? 'Edit Guest' : 'Add Guest'">Guest Form</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav class="navbar">
+    <span class="brand">🏨 Hotel Booking</span>
+    <div class="nav-links">
+        <a th:href="@{/home}">Dashboard</a>
+        <a th:href="@{/guest/list}">Guests</a>
+        <a th:href="@{/booking/list}">Bookings</a>
+        <a th:href="@{/logout}" class="logout">Logout</a>
+    </div>
+</nav>
+
+<main class="container">
+    <h1 th:text="${editMode} ? 'Edit Guest' : 'Add Guest'"></h1>
+
+    <form class="data-form" method="post"
+          th:action="${editMode} ? @{'/guest/edit/' + ${guest.id}} : @{/guest/add}"
+          th:object="${guest}">
+
+        <!-- ID is only ever shown, disabled inputs are never submitted by the
+             browser, and the server always ignores/re-derives the id anyway. -->
+        <div class="form-row" th:if="${editMode}">
+            <label>Guest ID</label>
+            <input type="text" th:value="${guest.id}" disabled readonly>
+        </div>
+
+        <div class="form-row">
+            <label>Name</label>
+            <input type="text" th:field="*{name}">
+            <span class="field-error" th:errors="*{name}"></span>
+        </div>
+
+        <div class="form-row">
+            <label>Email</label>
+            <input type="email" th:field="*{email}">
+            <span class="field-error" th:errors="*{email}"></span>
+        </div>
+
+        <div class="form-row">
+            <label>Mobile</label>
+            <input type="text" th:field="*{mobile}">
+            <span class="field-error" th:errors="*{mobile}"></span>
+        </div>
+
+        <h3>Passport Information</h3>
+
+        <div class="form-row">
+            <label>Passport Number</label>
+            <input type="text" th:field="*{passport.passportNumber}">
+            <span class="field-error" th:errors="*{passport.passportNumber}"></span>
+        </div>
+
+        <div class="form-row">
+            <label>Passport Expiry Date</label>
+            <input type="date" th:field="*{passport.expiryDate}">
+            <span class="field-error" th:errors="*{passport.expiryDate}"></span>
+        </div>
+
+        <div class="form-row">
+            <label>Passport Country</label>
+            <input type="text" th:field="*{passport.country}">
+            <span class="field-error" th:errors="*{passport.country}"></span>
+        </div>
+
+        <h3>Special Requests</h3>
+        <div class="form-row">
+            <div class="checkbox-group">
+                <label class="checkbox-item" th:each="option : ${specialRequestOptions}">
+                    <input type="checkbox" th:field="*{specialRequests}" th:value="${option}">
+                    <span th:text="${option}"></span>
+                </label>
+            </div>
+            <span class="field-error" th:errors="*{specialRequests}"></span>
+        </div>
+
+        <button type="submit" class="btn-primary" th:text="${editMode} ? 'Update Guest' : 'Add Guest'"></button>
+    </form>
+
+    <a th:href="@{/guest/list}" class="back-link">← Back to Guest List</a>
+</main>
+</body>
+</html>
